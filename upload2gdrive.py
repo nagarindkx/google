@@ -9,10 +9,18 @@ from apiclient.http import MediaFileUpload
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
+"""
+Developer: Kanakorn Horsiritham
+Organization: Computer Center, Prince of Songkla University
+Base Code: Python Quickstart
+	   https://developers.google.com/drive/v2/web/quickstart/python
+"""
 
 try:
     import argparse
-    parser = argparse.ArgumentParser(parents=[tools.argparser], description="Upload File to Google Drive")
+    parser = argparse.ArgumentParser(parents=[tools.argparser],
+				     description="Upload File to Google Drive",
+				     epilog="Remind to put your Client Secret into the same directory and named it client_secret.json"))
     parser.add_argument("--file" , help="File to Upload", required=True)
     parser.add_argument("--gdrive-id" , help="Destination Google Drive Folder ID", default="")
     parser.add_argument("--chunk-size" , help="Chunk Size in MB", default=100)
