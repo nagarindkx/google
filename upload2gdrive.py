@@ -20,7 +20,7 @@ try:
     import argparse
     parser = argparse.ArgumentParser(parents=[tools.argparser],
 				     description="Upload File to Google Drive",
-				     epilog="Remind to put your Client Secret into the same directory and named it client_secret.json"))
+				     epilog="Remind to put your Client Secret into the same directory and named it client_secret.json")
     parser.add_argument("--file" , help="File to Upload", required=True)
     parser.add_argument("--gdrive-id" , help="Destination Google Drive Folder ID", default="")
     parser.add_argument("--chunk-size" , help="Chunk Size in MB", default=100)
