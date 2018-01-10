@@ -13,7 +13,7 @@ from oauth2client.file import Storage
 Developer: Kanakorn Horsiritham
 Organization: Computer Center, Prince of Songkla University
 Base Code: Python Quickstart
-	   https://developers.google.com/drive/v2/web/quickstart/python
+	   https://developers.google.com/drive/v3/web/quickstart/python
 """
 
 try:
@@ -55,7 +55,7 @@ def get_credentials():
 def main():
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
-    service = discovery.build('drive', 'v2', http=http)
+    service = discovery.build('drive', 'v3', http=http)
 
     if os.name == "posix":
 	filename = os.path.basename(args.file)
@@ -64,16 +64,16 @@ def main():
  	   filename = ntpath.basename(args.file)
 
     if args.gdrive_id != "":
-       file_metadata = { 'title' : filename ,
-	                 'parents': [ {'id': args.gdrive_id}]
+       file_metadata = { 'name' : filename ,
+	                 'parents': [ args.gdrive_id]
 	               }
     else:
-       file_metadata = { 'title' : filename }
+       file_metadata = { 'name' : filename }
 
     media = MediaFileUpload( args.file,
                                 chunksize=int(args.chunk_size)*1024*1024,
                                 resumable=True)
-    request = service.files().insert(body=file_metadata,
+    request = service.files().create(body=file_metadata,
                                  media_body=media,
                                  )
     response = None
