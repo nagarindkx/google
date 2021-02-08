@@ -19,11 +19,12 @@ Base Code: Python Quickstart
 try:
     import argparse
     parser = argparse.ArgumentParser(parents=[tools.argparser],
-				     description="Upload File to Google Drive",
-				     epilog="Remind to put your Client Secret into the same directory and named it client_secret.json")
-    parser.add_argument("--file" , help="File to Upload", required=True)
-    parser.add_argument("--gdrive-id" , help="Destination Google Drive Folder ID", default="")
-    parser.add_argument("--chunk-size" , help="Chunk Size in MB", default=100)
+                                     description="Upload File to Google Drive",
+                                     epilog="Remind to put your Client Secret into the same directory and named it client_secret.json")
+    parser.add_argument("--file", help="File to Upload", required=True)
+    parser.add_argument(
+        "--gdrive-id", help="Destination Google Drive Folder ID", default="")
+    parser.add_argument("--chunk-size", help="Chunk Size in MB", default=100)
     args = parser.parse_args()
 
 except ImportError:
@@ -32,6 +33,7 @@ except ImportError:
 SCOPES = "https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata"
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Upload2Drive'
+
 
 def get_credentials():
     credential_dir = os.getcwd()
@@ -47,10 +49,11 @@ def get_credentials():
         flow.user_agent = APPLICATION_NAME
         if args:
             credentials = tools.run_flow(flow, store, args)
-        else: # Needed only for compatibility with Python 2.6
+        else:  # Needed only for compatibility with Python 2.6
             credentials = tools.run(flow, store)
         print('Storing credentials to ' + credential_path)
     return credentials
+
 
 def main():
     credentials = get_credentials()
@@ -58,37 +61,40 @@ def main():
     service = discovery.build('drive', 'v3', http=http)
 
     if os.name == "posix":
-	filename = os.path.basename(args.file)
+        filename = os.path.basename(args.file)
     else:
-	if os.name == "nt":
- 	   filename = ntpath.basename(args.file)
+        if os.name == "nt":
+            filename = ntpath.basename(args.file)
 
     if args.gdrive_id != "":
-       file_metadata = { 'name' : filename ,
-	                 'parents': [ args.gdrive_id]
-	               }
+        file_metadata = {'name': filename,
+                         'parents': [args.gdrive_id]
+                         }
     else:
-       file_metadata = { 'name' : filename }
+        file_metadata = {'name': filename}
 
-    media = MediaFileUpload( args.file,
-                                chunksize=int(args.chunk_size)*1024*1024,
-                                resumable=True)
+    media = MediaFileUpload(args.file,
+                            chunksize=int(args.chunk_size)*1024*1024,
+                            resumable=True)
     request = service.files().create(body=file_metadata,
-                                 media_body=media,
-                                 )
+                                     media_body=media,
+                                     )
     response = None
-    i=1
-    starttime=datetime.datetime.now()
+    i = 1
+    starttime = datetime.datetime.now()
     while response is None:
         status, response = request.next_chunk()
         if status:
-            progresstime=datetime.datetime.now()            
-            print("%d %s Uploaded %d%%." % (i, (progresstime - starttime), int(status.progress() *100)))
-            i=i+1
-    stoptime=datetime.datetime.now()
-    filesize=os.path.getsize(args.file)
-    print("File %s Size %.2f MB Duration %s " % (filename, float(filesize/(1000*1000)), (stoptime - starttime)))
+            progresstime = datetime.datetime.now()
+            print("%d %s Uploaded %d%%." %
+                  (i, (progresstime - starttime), int(status.progress() * 100)))
+            i = i+1
+    stoptime = datetime.datetime.now()
+    filesize = os.path.getsize(args.file)
+    print("File %s Size %.2f MB Duration %s " %
+          (filename, float(filesize/(1000*1000)), (stoptime - starttime)))
     print("Upload Complete!")
+
 
 if __name__ == '__main__':
     main()
