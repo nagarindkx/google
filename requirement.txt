@@ -1,0 +1,4 @@
+httplib2
+apiclient
+oauth2client
+google-api-python-client
